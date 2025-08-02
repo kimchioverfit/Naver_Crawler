@@ -33,46 +33,69 @@ try:
     search_box.send_keys(Keys.RETURN)
     print("✅ 검색어 입력 완료")
 
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 100).until(
         lambda d: "search" in d.current_url
     )
 
     print(f"🔄 URL 변경 감지됨: {driver.current_url}")
     driver.get("https://search.shopping.naver.com/search/all?query=RTX4060")
 
+    price_compare_li = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "li[data-shp-contents-id='가격비교'] > a")
+        )
+    )
+
+    driver.execute_script("arguments[0].click();", price_compare_li)
+    print("✅ 가격비교 탭 클릭 완료")
+
+    time.sleep(2)
+
     low_price_elem = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "a.subFilter_sort__4Q_hv[data-shp-contents-id='낮은 가격순']"))
     )
     
     driver.execute_script("arguments[0].click();", low_price_elem)
+    print("✅ 낮은가격순 클릭 완료")
 
     time.sleep(2)
 
+    all_prices = []
 
-###
-    from selenium.webdriver.common.by import By
-    import time
+    while True:
+        # ⬇️ 스크롤 다운
+        for _ in range(10):
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(1.0)
 
-    # ▶ 3. 스크롤 반복
-    SCROLL_PAUSE_TIME = 1.0
-    scroll_count = 10  # 몇 번 스크롤할지
+        # ⬇️ 현재 페이지의 가격 추출
+        price_elements = driver.find_elements(By.CSS_SELECTOR, "span[class^='price_num__']")
+        for elem in price_elements:
+            text = elem.text.replace(",", "").replace("원", "").strip()
+            if text.isdigit():
+                all_prices.append(int(text))
 
-    for _ in range(scroll_count):
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(SCROLL_PAUSE_TIME)
+        print(f"✅ 현재까지 수집한 가격 개수: {len(all_prices)}")
 
-    # ▶ 4. 가격 정보 추출
-    price_elements = driver.find_elements(By.CSS_SELECTOR, "span[class^='price_num__']")
-    prices = []
+        # ⬇️ "다음" 버튼 탐색
+        try:
+            next_button = WebDriverWait(driver, 3).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, "a.pagination_next__kh_cw"))
+            )
 
-    for elem in price_elements:
-        text = elem.text.replace(",", "").replace("원", "").strip()
-        if text.isdigit():
-            prices.append(int(text))
+            # "다음" 버튼이 비활성화되어 있는 경우 체크
+            if "disabled" in next_button.get_attribute("class"):
+                print("🔚 마지막 페이지입니다.")
+                break
 
-    print(f"✅ 총 가격 수집: {len(prices)}개")
-    print(prices)
+            # "다음" 버튼 클릭
+            driver.execute_script("arguments[0].click();", next_button)
+            print("➡️ 다음 페이지 이동")
+            time.sleep(2)
 
+        except Exception:
+            print("🔚 '다음' 버튼 없음 또는 클릭 불가 → 크롤링 종료")
+            break
 
 
 except Exception as e:
@@ -87,5 +110,6 @@ except Exception as e:
 
 # ▶ 7. 결과 스크린샷
 driver.save_screenshot("final_result.png")
+print(all_prices)
 input('dddd')
 driver.quit()
