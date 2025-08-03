@@ -9,7 +9,6 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
 class Tester():
-
     def _sac(self):
         while True:
             # ⬇️ 스크롤 다운
@@ -82,13 +81,12 @@ class Tester():
     def start(self):
         self._initialize_chrome_options()
         self.driver.get(f"https://search.shopping.naver.com/search/all?query={self.keyword}")
-        time.sleep(5)
         try:
             self._find_exact_same_target()
             time.sleep(2)
             self._ascending_prices()
             time.sleep(2)
-            self.sac(self)
+            self._sac()
             
         except Exception as e:
             print(e)
@@ -101,7 +99,6 @@ class Tester():
         self.driver.save_screenshot("final_result.png")
         print(self.all_prices)
         self.driver.quit()
-
 
 if __name__ == '__main__':
     kyj = Tester()
