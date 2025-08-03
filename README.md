@@ -14,7 +14,32 @@ PyQt5 GUI 기반으로 동작하는 네이버 쇼핑 가격 수집기입니다.
 - 콘솔에 실시간 진행 로그 출력
 
 ---
+## 실행 전 준비 
 
+### 1️⃣ 필수 패키지 설치
+
+```bash
+pip install -r requirements.txt
+```
+
+현재 NAVER의 인증은 OCR check 가 아닌 사용자의 로그인정보 쿠키를 이용합니다. 
+
+쿠키 이용해서 인증 과정을 스킵하시려면 
+
+```bash
+pyinstaller preprocessor.spec
+```
+실행파일로 쿠키 저장 후 아래의 네이버 크롤러를 이용해주세요. 
+
+또는 
+
+```bash
+python3 preprocess.py
+```
+
+이용하여 쿠키 저장 후 사용해주세요.
+
+---
 ## 📸 실행 예시
 
 ```
@@ -27,40 +52,16 @@ PyQt5 GUI 기반으로 동작하는 네이버 쇼핑 가격 수집기입니다.
 
 ## 🛠️ 설치 및 실행 방법
 
-### 1️⃣ 필수 패키지 설치
+### Crawler 실행
 
 ```bash
-pip install -r requirements.txt
+python gui_launcher.py
 ```
 
-또는:
+또는 아래와 같이 exe 생성 후 이용하시기 바랍니다.
 
 ```bash
-pip install PyQt5 selenium undetected-chromedriver
-```
-
-### 2️⃣ GUI 실행
-
-```bash
-python main.py
-```
-
----
-
-## 🧊 PyInstaller로 실행 파일 만들기 (Windows용)
-
-### `main.py` 내 필수 코드
-
-```python
-if __name__ == '__main__':
-    import multiprocessing
-    multiprocessing.freeze_support()
-```
-
-### 빌드 명령어
-
-```bash
-pyinstaller main.py --noconfirm --onefile --windowed
+pyinstaller naver_crawler.spec
 ```
 
 ### 크롬 창 무한 생성 방지
@@ -74,7 +75,7 @@ pyinstaller main.py --noconfirm --onefile --windowed
 
 ```
 project-root/
-├── main.py               # PyQt GUI 실행 파일
+├── gui_launcher.py               # PyQt GUI 실행 파일
 ├── naver_crawler.py      # 크롤링 로직 클래스
 ├── requirements.txt      # 의존 패키지 목록
 ├── README.md             # 설명 문서
