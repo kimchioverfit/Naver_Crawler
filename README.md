@@ -95,8 +95,8 @@ project-root/
 ## 👨‍💻 개발자 정보
 
 **Patrick Kim (김영준)**  
-📧 email: [your_email@example.com]  
-🔗 GitHub: [github.com/your_profile](https://github.com/your_profile)
+📧 email: [god102104@gmail.com]  
+🔗 GitHub: [https://github.com/kimchioverfit)
 
 ---
 
