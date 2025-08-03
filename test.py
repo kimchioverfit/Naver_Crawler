@@ -29,7 +29,8 @@ try:
             (By.CSS_SELECTOR, "input[placeholder='상품명 또는 브랜드 입력'][type='text']")
         )
     )
-    search_box.send_keys("RTX4060")
+    keyword = 'JP5TSU837MW'
+    search_box.send_keys(keyword)
     search_box.send_keys(Keys.RETURN)
     print("✅ 검색어 입력 완료")
 
@@ -38,7 +39,7 @@ try:
     )
 
     print(f"🔄 URL 변경 감지됨: {driver.current_url}")
-    driver.get("https://search.shopping.naver.com/search/all?query=RTX4060")
+    driver.get(f"https://search.shopping.naver.com/search/all?query={keyword}")
 
     price_compare_li = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located(
